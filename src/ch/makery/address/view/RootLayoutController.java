@@ -9,8 +9,8 @@ public class RootLayoutController {
 	private MainApp mainApp;
 	
 	@FXML
-	private void handleAboutMenu() {
-		mainApp.showTableView();
+	private void handleFileOpenMenu() {
+		mainApp.loadLogFile();
 	}
 	
 	public void setMainApp(MainApp mainApp) {
