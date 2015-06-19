@@ -21,6 +21,7 @@ import javafx.stage.Stage;
 
 public class LogViewTableViewController implements FileTailerListener{
 
+	private static final int FILE_POOLING_INTERVAL = 1000;
 	@FXML
 	private TableView<LogEntry> mLogTable;
 	@FXML
@@ -73,25 +74,12 @@ public class LogViewTableViewController implements FileTailerListener{
 		
 		mLogsList = new ArrayList<>();
 		
-//		mLogs.addAll(mLogsList);
 		mLogTable.setItems(mLogs);
 		
-		mLogFileTailer = new FileTailer(logFile);
+		mLogFileTailer = new FileTailer(logFile, FILE_POOLING_INTERVAL, true);
 		mLogFileTailer.addLogFileTailerListener(this);
 		
 		mLogFileTailer.start();
-		
-//		try(BufferedReader logFileReader = new BufferedReader(new FileReader(logFile.getAbsolutePath()))){
-//			String logLine = logFileReader.readLine();
-//			while(logLine != null) {
-//				mLogsList.add(new LogEntry(logLine));
-//				//mLogs.add(new LogEntry(logLine));
-//				logLine = logFileReader.readLine();
-//			}
-//		} catch(IOException ignore) {
-//			ignore.printStackTrace();
-//		}
-
 		
 	}
 
@@ -105,5 +93,10 @@ public class LogViewTableViewController implements FileTailerListener{
 		LogEntry e = new LogEntry(line);
 		mLogsList.add(e);
 		mLogs.add(e);
+	}
+
+	public void stopProcessLogging() {
+		System.out.println("Stop process the log");
+		mLogFileTailer.stopTailing();
 	}
 }

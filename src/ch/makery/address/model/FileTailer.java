@@ -16,7 +16,7 @@ public class FileTailer extends Thread {
 	/**
 	 * How frequently to check for file changes; defaults to 5 seconds
 	 */
-	private long sampleInterval = 1000;
+	private long sampleInterval = 5000;
 
 	/**
 	 * The log file to tail
