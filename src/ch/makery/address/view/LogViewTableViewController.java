@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import ch.makery.address.model.FileTailer;
+import ch.makery.address.model.FileTailerListener;
 import ch.makery.address.model.LogEntry;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -17,7 +19,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-public class LogViewTableViewController {
+public class LogViewTableViewController implements FileTailerListener{
 
 	@FXML
 	private TableView<LogEntry> mLogTable;
@@ -33,6 +35,8 @@ public class LogViewTableViewController {
 	private ObservableList<LogEntry> mLogs = FXCollections.observableArrayList();
 	
 	private String mRegex;
+	
+	FileTailer mLogFileTailer;
 	
 	@FXML
 	private void initialize() {
@@ -58,8 +62,6 @@ public class LogViewTableViewController {
 		for(LogEntry log: mLogsList) {
 			Matcher m = pattern.matcher(log.getPayload());
 			if(m.find()) {
-//			if(log.getPayload().matches(mRegex)) {
-				System.out.println("LogViewTableViewController.onRegexUpdate(): found " + log.getPayload());
 				mLogs.add(log);
 			}
 		}
@@ -71,22 +73,37 @@ public class LogViewTableViewController {
 		
 		mLogsList = new ArrayList<>();
 		
-		try(BufferedReader logFileReader = new BufferedReader(new FileReader(logFile.getAbsolutePath()))){
-			String logLine = logFileReader.readLine();
-			while(logLine != null) {
-				mLogsList.add(new LogEntry(logLine));
-				//mLogs.add(new LogEntry(logLine));
-				logLine = logFileReader.readLine();
-			}
-		} catch(IOException ignore) {
-			ignore.printStackTrace();
-		}
-
-		mLogs.addAll(mLogsList);
+//		mLogs.addAll(mLogsList);
 		mLogTable.setItems(mLogs);
+		
+		mLogFileTailer = new FileTailer(logFile);
+		mLogFileTailer.addLogFileTailerListener(this);
+		
+		mLogFileTailer.start();
+		
+//		try(BufferedReader logFileReader = new BufferedReader(new FileReader(logFile.getAbsolutePath()))){
+//			String logLine = logFileReader.readLine();
+//			while(logLine != null) {
+//				mLogsList.add(new LogEntry(logLine));
+//				//mLogs.add(new LogEntry(logLine));
+//				logLine = logFileReader.readLine();
+//			}
+//		} catch(IOException ignore) {
+//			ignore.printStackTrace();
+//		}
+
+		
 	}
 
 	public ObservableList<LogEntry> getLogs() {
 		return mLogs;
+	}
+
+	@Override
+	public void newFileLine(String line) {
+		System.out.println( line );
+		LogEntry e = new LogEntry(line);
+		mLogsList.add(e);
+		mLogs.add(e);
 	}
 }

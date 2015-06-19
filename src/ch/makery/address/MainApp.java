@@ -1,11 +1,11 @@
 package ch.makery.address;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
 
 import ch.makery.address.model.Person;
-import ch.makery.address.view.PersonEditDialogController;
-import ch.makery.address.view.PersonOverviewController;
 import ch.makery.address.view.RootLayoutController;
 import ch.makery.address.view.LogViewTableViewController;
 import javafx.application.Application;
@@ -14,10 +14,8 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class MainApp extends Application {
@@ -50,8 +48,12 @@ public class MainApp extends Application {
 
 		this.primaryStage.getIcons().add(new Image("file:resources/images/address-book.png"));
 		
-		this.primaryStage.setWidth(800);
-		this.primaryStage.setHeight(600);
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		double width = screenSize.getWidth();
+		double height = screenSize.getHeight();
+		
+		this.primaryStage.setWidth(width/1.5);
+		this.primaryStage.setHeight(height/1.5);
 		
 		initRootLayout();
 
